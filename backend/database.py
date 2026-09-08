@@ -2,6 +2,7 @@
 MongoDB connection layer using Motor (async driver).
 Import `db` anywhere you need collection access.
 """
+import certifi
 from motor.motor_asyncio import AsyncIOMotorClient
 from config import settings
 
