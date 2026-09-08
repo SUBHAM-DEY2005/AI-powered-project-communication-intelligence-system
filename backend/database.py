@@ -11,7 +11,7 @@ _client: AsyncIOMotorClient | None = None
 def get_client() -> AsyncIOMotorClient:
     global _client
     if _client is None:
-        _client = AsyncIOMotorClient(settings.mongodb_uri)
+         _client = AsyncIOMotorClient(settings.mongodb_uri, tlsCAFile=certifi.where())
     return _client
 
 
