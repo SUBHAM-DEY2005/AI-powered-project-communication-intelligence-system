@@ -35,6 +35,8 @@ async def create_communication(project_id: str, payload: CommunicationCreate):
 async def list_communications(project_id: str):
     if not is_valid_object_id(project_id):
         raise HTTPException(status_code=400, detail="Invalid project id")
+    if not await db.projects.find_one({"_id": ObjectId(project_id)}):
+        raise HTTPException(status_code=404, detail="Project not found")
     items = []
     async for doc in db.communications.find({"projectId": project_id}).sort("createdAt", -1):
         items.append(serialize_doc(doc))
@@ -49,6 +51,19 @@ async def get_communication(communication_id: str):
     if not doc:
         raise HTTPException(status_code=404, detail="Communication not found")
     return serialize_doc(doc)
+
+
+@router.delete("/api/communications/{communication_id}", status_code=204)
+async def delete_communication(communication_id: str):
+    if not is_valid_object_id(communication_id):
+        raise HTTPException(status_code=400, detail="Invalid communication id")
+    result = await db.communications.delete_one({"_id": ObjectId(communication_id)})
+    if result.deleted_count == 0:
+        raise HTTPException(status_code=404, detail="Communication not found")
+    # Cascade: remove tasks/decisions that were extracted from this communication
+    await db.tasks.delete_many({"communicationId": communication_id})
+    await db.decisions.delete_many({"communicationId": communication_id})
+    return None
 
 
 @router.post("/api/communications/{communication_id}/analyze")

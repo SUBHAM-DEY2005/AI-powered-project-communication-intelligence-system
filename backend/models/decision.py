@@ -4,6 +4,11 @@ from pydantic import BaseModel
 DecisionStatus = Literal["approved", "rejected", "pending"]
 
 
+class DecisionUpdate(BaseModel):
+    description: Optional[str] = None
+    status: Optional[DecisionStatus] = None
+
+
 class DecisionOut(BaseModel):
     id: str
     projectId: str

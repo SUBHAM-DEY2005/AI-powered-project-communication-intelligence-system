@@ -35,6 +35,8 @@ export const createCommunication = (projectId, text) =>
     .then((r) => r.data);
 export const analyzeCommunication = (communicationId) =>
   api.post(`/api/communications/${communicationId}/analyze`).then((r) => r.data);
+export const deleteCommunication = (communicationId) =>
+  api.delete(`/api/communications/${communicationId}`);
 
 // ---- Tasks ----
 export const listTasks = (projectId, status) =>
@@ -52,6 +54,9 @@ export const listDecisions = (projectId, status) =>
       params: status ? { status } : {},
     })
     .then((r) => r.data);
+export const updateDecision = (decisionId, updates) =>
+  api.patch(`/api/decisions/${decisionId}`, updates).then((r) => r.data);
+export const deleteDecision = (decisionId) => api.delete(`/api/decisions/${decisionId}`);
 
 // ---- Search ----
 export const searchProject = (projectId, q) =>
